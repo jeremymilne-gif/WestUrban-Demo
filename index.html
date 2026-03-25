@@ -1268,6 +1268,7 @@ document.getElementById('defect-form').addEventListener('submit', async function
 
     await fetch('https://hooks.zapier.com/hooks/catch/26957250/upjfrpe/', {
       method: 'POST',
+      mode: 'no-cors',
       body: JSON.stringify(formData)
     });
 
