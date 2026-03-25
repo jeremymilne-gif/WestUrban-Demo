@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Defect Report — WestUrban Homeowner Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --charcoal: #2C2C2C;
+    --dark: #1A1A1A;
+    --mid: #3D3D3D;
+    --light-grey: #F5F5F5;
+    --border: #DEDEDE;
+    --muted: #888888;
+    --white: #FFFFFF;
+    --accent: #C8A96E;      /* warm gold — pulled from WestUrban's premium aesthetic */
+    --accent-dark: #A88A50;
+    --accent-pale: #FAF6EF;
+    --success: #4A7C59;
+    --success-bg: #EEF5F1;
+    --radius: 4px;
+    --radius-lg: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: var(--light-grey);
+    color: var(--charcoal);
+    min-height: 100vh;
+    font-size: 14px;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--dark);
+    padding: 0 48px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo-img {
+    height: 34px;
+    width: auto;
+    filter: brightness(0) invert(1);
+  }
+
+  /* Fallback text logo if image fails */
+  .logo-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .logo-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,0.2);
+  }
+
+  .logo-sub {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .header-nav {
+    display: flex;
+    gap: 24px;
+  }
+
+  .header-nav a {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .header-nav a:hover { color: var(--white); }
+
+  .header-contact {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 640px) {
+    header { padding: 0 20px; }
+    .header-nav, .header-contact { display: none; }
+  }
+
+  /* ── Hero banner ── */
+  .hero {
+    background: var(--charcoal);
+    padding: 52px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgba(200,169,110,0.06));
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .hero-left { flex: 1; }
+
+  .hero-eyebrow {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(26px, 3.5vw, 38px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .hero p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    max-width: 480px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .hero-right {
+    text-align: right;
+    flex-shrink: 0;
+    padding-top: 4px;
+  }
+
+  .sla-badge {
+    display: inline-block;
+    border: 1px solid rgba(200,169,110,0.35);
+    border-radius: var(--radius);
+    padding: 12px 18px;
+    text-align: center;
+  }
+
+  .sla-num {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .sla-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 36px 20px; }
+    .hero-inner { flex-direction: column; gap: 20px; }
+    .hero-right { text-align: left; }
+  }
+
+  /* ── Progress bar ── */
+  .progress-bar {
+    background: var(--dark);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 0 48px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .progress-inner {
+    max-width: 900px;
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .prog-step {
+    flex: 1;
+    padding: 14px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.28);
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .prog-step.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .prog-step.done {
+    color: rgba(255,255,255,0.5);
+    border-bottom-color: rgba(255,255,255,0.2);
+  }
+
+  .prog-num {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  .prog-step.done .prog-num {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.3);
+  }
+
+  @media (max-width: 600px) {
+    .progress-bar { padding: 0 20px; }
+    .prog-label { display: none; }
+  }
+
+  /* ── Page layout ── */
+  .page {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── Section label ── */
+  .section-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    margin-bottom: 2px;
+  }
+
+  .card:first-child { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+  .card:last-child { border-radius: 0 0 var(--radius-lg) var(--radius-lg); margin-bottom: 0; }
+  .card:only-child { border-radius: var(--radius-lg); }
+
+  .card + .section-label { margin-top: 32px; }
+
+  .card-header {
+    padding: 20px 28px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .card-icon {
+    width: 38px; height: 38px;
+    background: var(--charcoal);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 15px;
+  }
+
+  .card-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--dark);
+  }
+
+  .card-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+    font-weight: 300;
+  }
+
+  .card-body {
+    padding: 26px 28px;
+  }
+
+  /* ── Form ── */
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  .field-row.single { grid-template-columns: 1fr; }
+  .field-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+  @media (max-width: 580px) {
+    .field-row, .field-row.triple { grid-template-columns: 1fr; }
+  }
+
+  .field { display: flex; flex-direction: column; gap: 7px; }
+
+  label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mid);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  label .req { color: var(--accent); }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    color: var(--dark);
+    background: var(--white);
+    transition: border-color 0.18s, box-shadow 0.18s;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+    cursor: pointer;
+  }
+
+  textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(200,169,110,0.15);
+  }
+
+  input::placeholder, textarea::placeholder { color: #BBBBBB; font-weight: 300; }
+
+  .field-hint { font-size: 11px; color: var(--muted); font-weight: 300; }
+
+  /* ── Priority ── */
+  .priority-group { display: flex; gap: 8px; }
+
+  .priority-btn {
+    flex: 1;
+    padding: 11px 6px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    cursor: pointer;
+    text-align: center;
+    border-radius: var(--radius);
+    transition: all 0.18s;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  .priority-btn .p-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin: 0 auto 6px;
+  }
+
+  .priority-btn[data-val="low"] .p-dot { background: #4A7C59; }
+  .priority-btn[data-val="medium"] .p-dot { background: #C9900A; }
+  .priority-btn[data-val="high"] .p-dot { background: #C86328; }
+  .priority-btn[data-val="critical"] .p-dot { background: #A01010; }
+
+  .priority-btn .p-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .priority-btn:hover { border-color: var(--accent); }
+
+  .priority-btn.selected { border-color: var(--charcoal); background: var(--charcoal); }
+  .priority-btn.selected .p-label { color: var(--white); }
+
+  /* ── Upload ── */
+  .upload-zone {
+    border: 1.5px dashed var(--border);
+    padding: 30px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--light-grey);
+    border-radius: var(--radius);
+  }
+
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: var(--accent-pale);
+  }
+
+  .upload-zone input { display: none; }
+
+  .upload-icon { font-size: 26px; margin-bottom: 8px; }
+
+  .upload-main {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    margin-bottom: 6px;
+  }
+
+  .upload-sub {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .upload-sub span {
+    color: var(--accent-dark);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+  }
+
+  .photo-previews { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+
+  .photo-thumb {
+    position: relative;
+    width: 76px; height: 76px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  .photo-remove {
+    position: absolute;
+    top: 3px; right: 3px;
+    width: 18px; height: 18px;
+    background: var(--charcoal);
+    border: none;
+    color: white;
+    font-size: 10px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 2px;
+    line-height: 1;
+  }
+
+  /* ── Info note ── */
+  .info-note {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--accent-pale);
+    border-left: 3px solid var(--accent);
+    font-size: 12px;
+    color: var(--mid);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ── Submit ── */
+  .submit-wrap {
+    padding: 24px 28px;
+    background: var(--charcoal);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .submit-note {
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+    flex: 1;
+    min-width: 200px;
+    font-weight: 300;
+  }
+
+  .submit-note strong { color: rgba(255,255,255,0.7); font-weight: 500; }
+
+  .btn-submit {
+    background: var(--accent);
+    color: var(--dark);
+    border: none;
+    padding: 14px 32px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: var(--radius);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn-submit:hover {
+    background: var(--accent-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(200,169,110,0.35);
+  }
+
+  .btn-submit:active { transform: none; }
+  .btn-submit.loading { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .btn-arrow { width: 14px; height: 14px; }
+
+  /* ── Dev panel ── */
+  .dev-panel {
+    margin-top: 36px;
+    background: var(--dark);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .dev-panel-header {
+    background: var(--charcoal);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .dev-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+  .dev-panel-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-left: auto;
+  }
+
+  .dev-endpoint {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: rgba(200,169,110,0.7);
+    padding: 10px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .dev-code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #D4C4A8;
+    padding: 16px 20px;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.65;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .dev-code .k { color: #C678DD; }
+  .dev-code .s { color: #98C379; }
+  .dev-code .n { color: #61AFEF; }
+  .dev-code .v { color: #E5C07B; }
+  .dev-code .c { color: rgba(255,255,255,0.28); font-style: italic; }
+
+  /* ── Success ── */
+  #success-screen {
+    display: none;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .success-header {
+    background: var(--charcoal);
+    padding: 40px 40px 36px;
+    text-align: center;
+  }
+
+  .success-tick {
+    width: 60px; height: 60px;
+    background: rgba(200,169,110,0.15);
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+    font-size: 24px;
+  }
+
+  .success-header h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+
+  .success-header p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.65;
+    font-weight: 300;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+
+  .success-body {
+    padding: 32px 40px;
+    text-align: center;
+  }
+
+  .ref-block {
+    display: inline-block;
+    border: 1px solid var(--border);
+    padding: 14px 28px;
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+  }
+
+  .ref-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .ref-num {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--charcoal);
+    letter-spacing: 0.06em;
+  }
+
+  .procore-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .confirm-note {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .confirm-note strong { color: var(--charcoal); font-weight: 600; }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--dark);
+    padding: 28px 48px;
+    margin-top: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .footer-left {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .footer-right {
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    font-weight: 300;
+  }
+
+  @media (max-width: 600px) {
+    footer { padding: 20px; flex-direction: column; text-align: center; }
+    .page { padding: 0 14px 60px; }
+    .card-body, .card-header { padding: 16px 18px; }
+    .submit-wrap { padding: 18px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="logo-wrap">
+    <img
+      src="https://westurban.com.au/wp-content/uploads/2025/04/WestUrban-logo-01-300x48.png"
+      alt="WestUrban"
+      class="logo-img"
+      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+    >
+    <span class="logo-text" style="display:none">WestUrban</span>
+    <div class="logo-divider"></div>
+    <div class="logo-sub">Homeowner Portal</div>
+  </div>
+  <div class="header-right">
+    <nav class="header-nav">
+      <a href="https://westurban.com.au/?page_id=425" target="_blank">About</a>
+      <a href="https://westurban.com.au/?page_id=1305" target="_blank">Projects</a>
+      <a href="https://westurban.com.au/?page_id=1195" target="_blank">Contact</a>
+    </nav>
+    <div class="header-contact">(+61) 3 9546 7078</div>
+  </div>
+</header>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Warranty &amp; Defect Management</div>
+      <h1>Report a<br>Home Defect</h1>
+      <p>Submit your defect report below and our team will action it promptly. All reports are logged directly into our Procore management system and tracked through to completion.</p>
+    </div>
+    <div class="hero-right">
+      <div class="sla-badge">
+        <div class="sla-num">2</div>
+        <div class="sla-label">Business Day<br>Response SLA</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Progress ── -->
+<div class="progress-bar">
+  <div class="progress-inner">
+    <div class="prog-step active" id="step-1">
+      <div class="prog-num">1</div>
+      <span class="prog-label">Your Details</span>
+    </div>
+    <div class="prog-step" id="step-2">
+      <div class="prog-num">2</div>
+      <span class="prog-label">Defect Info</span>
+    </div>
+    <div class="prog-step" id="step-3">
+      <div class="prog-num">3</div>
+      <span class="prog-label">Photos</span>
+    </div>
+    <div class="prog-step" id="step-4">
+      <div class="prog-num">4</div>
+      <span class="prog-label">Submit</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Page ── -->
+<div class="page">
+
+  <div id="form-screen">
+    <form id="defect-form" novalidate>
+
+      <!-- Section 1 -->
+      <div class="section-label">Your Details</div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">👤</div>
+          <div>
+            <div class="card-title">Homeowner Information</div>
+            <div class="card-subtitle">Your contact details so we can keep you updated on progress</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field">
+              <label>First Name <span class="req">*</span></label>
+              <input type="text" id="first-name" placeholder="Jane" required>
+            </div>
+            <div class="field">
+              <label>Last Name <span class="req">*</span></label>
+              <input type="text" id="last-name" placeholder="Smith" required>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Email Address <span class="req">*</span></label>
+              <input type="email" id="email" placeholder="jane.smith@email.com" required>
+            </div>
+            <div class="field">
+              <label>Mobile Number</label>
+              <input type="tel" id="phone" placeholder="+61 400 000 000">
+            </div>
+          </div>
+          <div class="field-row triple">
+            <div class="field">
+              <label>Lot / Unit No. <span class="req">*</span></label>
+              <input type="text" id="lot" placeholder="e.g. Lot 14" required>
+            </div>
+            <div class="field">
+              <label>Street Address <span class="req">*</span></label>
+              <input type="text" id="address" placeholder="12 Builder Street" required>
+            </div>
+            <div class="field">
+              <label>Suburb <span class="req">*</span></label>
+              <input type="text" id="suburb" placeholder="Mount Waverley" required>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Settlement Date</label>
+              <input type="text" id="settlement-date" placeholder="e.g. January 2025">
+            </div>
+            <div class="field">
+              <label>Project Name / Development</label>
+              <input type="text" id="project" placeholder="e.g. The Grove, Werribee">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="section-label">Defect Details</div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🔧</div>
+          <div>
+            <div class="card-title">Defect Information</div>
+            <div class="card-subtitle">Describe what you've found — the more detail you provide, the faster we can respond</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="field-row">
+            <div class="field">
+              <label>Defect Category <span class="req">*</span></label>
+              <select id="category" required>
+                <option value="" disabled selected>Select a category…</option>
+                <option value="structural">Structural</option>
+                <option value="plumbing">Plumbing &amp; Drainage</option>
+                <option value="electrical">Electrical</option>
+                <option value="roofing">Roofing &amp; Gutters</option>
+                <option value="windows_doors">Windows &amp; Doors</option>
+                <option value="flooring">Flooring &amp; Tiling</option>
+                <option value="painting">Painting &amp; Render</option>
+                <option value="cabinetry">Cabinetry &amp; Joinery</option>
+                <option value="hvac">HVAC / Air Conditioning</option>
+                <option value="landscaping">Landscaping &amp; External</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Location in Home <span class="req">*</span></label>
+              <select id="location" required>
+                <option value="" disabled selected>Select a location…</option>
+                <option value="master_bedroom">Master Bedroom</option>
+                <option value="bedroom_2">Bedroom 2</option>
+                <option value="bedroom_3">Bedroom 3</option>
+                <option value="main_bathroom">Main Bathroom</option>
+                <option value="ensuite">Ensuite</option>
+                <option value="kitchen">Kitchen</option>
+                <option value="living">Living / Dining</option>
+                <option value="laundry">Laundry</option>
+                <option value="garage">Garage</option>
+                <option value="external">External / Façade</option>
+                <option value="roof">Roof</option>
+                <option value="other">Other / Multiple Areas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-row single">
+            <div class="field">
+              <label>Defect Title <span class="req">*</span></label>
+              <input type="text" id="title" placeholder="e.g. Cracked render on external wall near garage door" required>
+              <div class="field-hint">A brief, clear summary of the issue</div>
+            </div>
+          </div>
+
+          <div class="field-row single">
+            <div class="field">
+              <label>Detailed Description <span class="req">*</span></label>
+              <textarea id="description" placeholder="Describe the defect in detail — when you first noticed it, the size/extent of the issue, any changes over time, and any impact on your use of the home." required></textarea>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Date First Noticed</label>
+              <input type="text" id="noticed-date" placeholder="e.g. March 2025">
+            </div>
+            <div class="field">
+              <label>Has this been reported before?</label>
+              <select id="reported-before">
+                <option value="no">No — first report</option>
+                <option value="yes_verbal">Yes — raised verbally</option>
+                <option value="yes_written">Yes — raised in writing</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field-row single">
+            <div class="field">
+              <label>Priority / Urgency <span class="req">*</span></label>
+              <div class="priority-group">
+                <button type="button" class="priority-btn" data-val="low">
+                  <div class="p-dot"></div>
+                  <div class="p-label">Low</div>
+                </button>
+                <button type="button" class="priority-btn selected" data-val="medium">
+                  <div class="p-dot"></div>
+                  <div class="p-label">Medium</div>
+                </button>
+                <button type="button" class="priority-btn" data-val="high">
+                  <div class="p-dot"></div>
+                  <div class="p-label">High</div>
+                </button>
+                <button type="button" class="priority-btn" data-val="critical">
+                  <div class="p-dot"></div>
+                  <div class="p-label">Critical</div>
+                </button>
+              </div>
+              <div class="field-hint">Critical = safety hazard or home uninhabitable. High = significant impact on daily living.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="section-label">Supporting Photos</div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">📷</div>
+          <div>
+            <div class="card-title">Photo Attachments</div>
+            <div class="card-subtitle">Upload up to 5 photos — these will be attached directly to your Procore defect record</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="upload-zone" id="upload-zone">
+            <input type="file" id="photo-input" accept="image/*" multiple>
+            <div class="upload-icon">📎</div>
+            <div class="upload-main">Drag &amp; Drop Photos Here</div>
+            <div class="upload-sub">or <span onclick="document.getElementById('photo-input').click()">browse to upload</span> &nbsp;·&nbsp; JPG, PNG, HEIC up to 10MB each</div>
+          </div>
+          <div class="photo-previews" id="photo-previews"></div>
+          <div class="info-note">
+            Good photos significantly help our team assess severity before attending site. Capture the full area affected and a close-up detail shot where possible.
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="card">
+        <div class="submit-wrap">
+          <div class="submit-note">
+            By submitting this form you agree to WestUrban's <strong>defect management process</strong>. You'll receive a reference number by email and an Observation will be opened in our Procore system immediately.
+          </div>
+          <button type="submit" class="btn-submit" id="submit-btn">
+            Submit Defect Report
+            <svg class="btn-arrow" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="2" y1="7" x2="12" y2="7"/><polyline points="8 3 12 7 8 11"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- API payload preview -->
+    <div class="dev-panel">
+      <div class="dev-panel-header">
+        <div class="dev-dot" style="background:#FF5F57"></div>
+        <div class="dev-dot" style="background:#FEBC2E; margin-left:5px;"></div>
+        <div class="dev-dot" style="background:#28C840; margin-left:5px;"></div>
+        <div class="dev-panel-title">Procore API · Live Payload Preview</div>
+      </div>
+      <div class="dev-endpoint">POST /rest/v1.0/projects/{project_id}/observations/items</div>
+      <div class="dev-code" id="api-preview"><span class="c">// Fill in the form above to preview the Procore API payload</span></div>
+    </div>
+
+  </div><!-- /form-screen -->
+
+  <!-- ── Success screen ── -->
+  <div id="success-screen">
+    <div class="success-header">
+      <div class="success-tick">✓</div>
+      <h2>Report Submitted</h2>
+      <p>Your defect has been logged and a Procore Observation has been opened. Our team will be in touch within 2 business days.</p>
+    </div>
+    <div class="success-body">
+      <div class="ref-block">
+        <div class="ref-label">Your Reference Number</div>
+        <div class="ref-num" id="ref-num">WU-2025-0000</div>
+      </div>
+      <br>
+      <div class="procore-status">
+        <div class="status-dot"></div>
+        Synced to Procore &nbsp;·&nbsp; Observation Opened
+      </div>
+      <br>
+      <div class="confirm-note">A confirmation has been sent to <strong id="confirm-email"></strong></div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="footer-left">WestUrban &copy; 2025 &nbsp;·&nbsp; Homeowner Defect Portal</div>
+  <div class="footer-right">411–415 Ferntree Gully Road, Mount Waverley VIC 3149 &nbsp;·&nbsp; (+61) 3 9546 7078</div>
+</footer>
+
+<script>
+  // Priority buttons
+  document.querySelectorAll('.priority-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      updatePreview();
+    });
+  });
+
+  // Photos
+  const uploadZone = document.getElementById('upload-zone');
+  const photoInput = document.getElementById('photo-input');
+  const previews   = document.getElementById('photo-previews');
+  let photos = [];
+
+  uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+  uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('dragover'); handleFiles([...e.dataTransfer.files]); });
+  uploadZone.addEventListener('click', e => { if (e.target === uploadZone || e.target.className === 'upload-main' || e.target.className === 'upload-icon') photoInput.click(); });
+  photoInput.addEventListener('change', () => handleFiles([...photoInput.files]));
+
+  function handleFiles(files) {
+    files.slice(0, 5 - photos.length).forEach(f => {
+      if (!f.type.startsWith('image/')) return;
+      const r = new FileReader();
+      r.onload = e => { photos.push({ name: f.name, data: e.target.result }); renderPreviews(); updatePreview(); };
+      r.readAsDataURL(f);
+    });
+  }
+
+  function renderPreviews() {
+    previews.innerHTML = '';
+    photos.forEach((p, i) => {
+      const d = document.createElement('div');
+      d.className = 'photo-thumb';
+      d.innerHTML = `<img src="${p.data}" alt="${p.name}"><button class="photo-remove" onclick="removePhoto(${i})">✕</button>`;
+      previews.appendChild(d);
+    });
+  }
+
+  window.removePhoto = function(i) { photos.splice(i, 1); renderPreviews(); updatePreview(); };
+
+  // Live API preview
+  const catMap = {
+    structural:'Structural', plumbing:'Plumbing', electrical:'Electrical',
+    roofing:'Roofing', windows_doors:'Windows & Doors', flooring:'Flooring',
+    painting:'Painting', cabinetry:'Cabinetry', hvac:'HVAC', landscaping:'Landscaping', other:'General'
+  };
+
+  const priMap = { low: 4, medium: 3, high: 2, critical: 1 };
+
+  function getVal(id) { return (document.getElementById(id)||{}).value || ''; }
+
+  function updatePreview() {
+    const priority = document.querySelector('.priority-btn.selected')?.dataset.val || 'medium';
+    const payload = {
+      observation: {
+        name: getVal('title') || 'Untitled defect',
+        description: getVal('description') || '',
+        priority: priMap[priority],
+        status: 'initiated',
+        type: { name: 'Defect' },
+        trade: { name: catMap[getVal('category')] || 'General' },
+        location: { name: `${getVal('lot')} — ${getVal('location') || 'TBD'}` },
+        assignees: [{ login: 'defects@westurban.com.au' }],
+        custom_fields: {
+          homeowner_name: `${getVal('first-name')} ${getVal('last-name')}`.trim(),
+          homeowner_email: getVal('email'),
+          homeowner_phone: getVal('phone'),
+          property_address: [getVal('address'), getVal('suburb')].filter(Boolean).join(', '),
+          lot_number: getVal('lot'),
+          project_name: getVal('project'),
+          date_noticed: getVal('noticed-date'),
+          settlement_date: getVal('settlement-date'),
+          previously_reported: getVal('reported-before'),
+        },
+        attachments: photos.length ? `[${photos.length} image(s) — upload via /rest/v1.0/projects/{id}/uploads]` : []
+      }
+    };
+    document.getElementById('api-preview').innerHTML = syntaxHL(JSON.stringify(payload, null, 2));
+  }
+
+  function syntaxHL(json) {
+    return json
+      .replace(/("(?:[^"\\]|\\.)*")\s*:/g, '<span class="n">$1</span>:')
+      .replace(/:\s*("(?:[^"\\]|\\.)*")/g, ': <span class="s">$1</span>')
+      .replace(/:\s*(\d+)/g, ': <span class="v">$1</span>')
+      .replace(/:\s*(true|false|null)/g, ': <span class="k">$1</span>');
+  }
+
+  document.querySelectorAll('input, select, textarea').forEach(el => el.addEventListener('input', updatePreview));
+  updatePreview();
+
+  // Step progress
+  function setSteps(n) {
+    [1,2,3,4].forEach(i => {
+      const s = document.getElementById(`step-${i}`);
+      s.className = 'prog-step' + (i < n ? ' done' : i === n ? ' active' : '');
+      s.querySelector('.prog-num').textContent = i < n ? '✓' : i;
+    });
+  }
+
+  document.getElementById('email').addEventListener('input', () => setSteps(2));
+  document.getElementById('category').addEventListener('change', () => setSteps(2));
+  document.getElementById('title').addEventListener('input', () => setSteps(3));
+  document.getElementById('description').addEventListener('input', () => setSteps(3));
+  photoInput.addEventListener('change', () => setSteps(4));
+
+  // Submit
+  document.getElementById('defect-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.classList.add('loading');
+    btn.innerHTML = 'Submitting… <span style="opacity:0.5">Please wait</span>';
+
+    await new Promise(r => setTimeout(r, 1800));
+
+    document.getElementById('form-screen').style.display = 'none';
+    const s = document.getElementById('success-screen');
+    s.style.display = 'block';
+
+    const year = new Date().getFullYear();
+    const num  = String(Math.floor(Math.random() * 9000) + 1000);
+    document.getElementById('ref-num').textContent = `WU-${year}-${num}`;
+    document.getElementById('confirm-email').textContent = getVal('email') || 'your email address';
+
+    setSteps(5);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+</body>
+</html>
