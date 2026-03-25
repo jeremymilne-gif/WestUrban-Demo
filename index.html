@@ -1241,13 +1241,35 @@
   photoInput.addEventListener('change', () => setSteps(4));
 
   // Submit
-  document.getElementById('defect-form').addEventListener('submit', async function(e) {
+document.getElementById('defect-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const btn = document.getElementById('submit-btn');
     btn.classList.add('loading');
     btn.innerHTML = 'Submitting… <span style="opacity:0.5">Please wait</span>';
 
-    await new Promise(r => setTimeout(r, 1800));
+    const formData = {
+      first_name: getVal('first-name'),
+      last_name: getVal('last-name'),
+      email: getVal('email'),
+      phone: getVal('phone'),
+      lot: getVal('lot'),
+      address: getVal('address'),
+      suburb: getVal('suburb'),
+      project: getVal('project'),
+      settlement_date: getVal('settlement-date'),
+      category: getVal('category'),
+      location: getVal('location'),
+      title: getVal('title'),
+      description: getVal('description'),
+      noticed_date: getVal('noticed-date'),
+      reported_before: getVal('reported-before'),
+      priority: document.querySelector('.priority-btn.selected')?.dataset.val || 'medium'
+    };
+
+    await fetch('https://hooks.zapier.com/hooks/catch/26957250/upjfrpe/', {
+      method: 'POST',
+      body: JSON.stringify(formData)
+    });
 
     document.getElementById('form-screen').style.display = 'none';
     const s = document.getElementById('success-screen');
